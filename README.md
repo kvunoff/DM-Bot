@@ -14,6 +14,7 @@ Distance Management Bot by kvunoff
  - Получение небольшого **видео** происходящего у вас на экране
  - Возможность **быстрой блокировки** вашего ПК
  - Возможность **экстренного выключения** вашего ПК
+ - Управление **окнами** вашего ПК
 
 Также есть и другие функции, часть из которых все еще в разработке!
 
@@ -31,6 +32,8 @@ It has various functions such as:
  - Getting a short **video** of what's happening on your screen
  - The ability to **quickly lock** your PC
  - The ability to **urgently shut down** your PC
+ - Managing your PC's **windows**
+
 There are also other functions, some of which are still under development!
 
 ## Advantages over other similar bots:
