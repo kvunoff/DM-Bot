@@ -2,7 +2,7 @@
 Distance Management Bot by kvunoff
 
 Скачать инструкцию по установке/Download the installation instructions:
-[Click](https://github.com/kvunoff/DM-Bot/releases/download/v-11mrch25/Installation-instructions.txt)
+[Click](https://github.com/kvunoff/DM-Bot/releases/download/13.3.2.5/Installation-instructions.txt)
 
 # Russian
 
