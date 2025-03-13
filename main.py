@@ -1,4 +1,3 @@
-
 import secrets
 import telebot
 from telebot import types
@@ -18,6 +17,7 @@ import tkinter as tk
 from tkinter import messagebox
 import pyperclip
 import tempfile
+import pygetwindow as gw
 
 TOKEN = ""
 TOKEN_INITIALIZED = False
@@ -31,10 +31,12 @@ ACCESS_CODE_TIMEOUT = 60
 AUTHORIZED_USERS = {}
 ACCESS_CODES = {}
 
+
 def generate_access_code():
     random_string = secrets.token_hex(16)
     hashed_code = hashlib.sha256(random_string.encode()).hexdigest()
     return hashed_code, random_string
+
 
 def store_access_code(telegram_id, hashed_code, random_string):
     access_file = f"access_{telegram_id}.tmp"
@@ -45,6 +47,7 @@ def store_access_code(telegram_id, hashed_code, random_string):
     except Exception as e:
         print(f"Ошибка при создании файла доступа: {e}")
         return None
+
 
 def verify_access_code(telegram_id, user_input):
     try:
@@ -58,11 +61,13 @@ def verify_access_code(telegram_id, user_input):
     else:
         return False
 
+
 def clear_access_code(telegram_id):
     try:
         del ACCESS_CODES[telegram_id]
     except KeyError:
         pass
+
 
 def load_user_data():
     global AUTHORIZED_USERS
@@ -75,6 +80,7 @@ def load_user_data():
         print("Ошибка при чтении файла user_data.json. Файл будет перезаписан.")
         AUTHORIZED_USERS = {}
 
+
 def save_user_data():
     try:
         with open(USER_DATA_FILE, "w") as f:
@@ -82,10 +88,13 @@ def save_user_data():
     except Exception as e:
         print(f"Ошибка при сохранении данных пользователей: {e}")
 
+
 load_user_data()
+
 
 def is_authorized(telegram_id):
     return AUTHORIZED_USERS.get(str(telegram_id), False)
+
 
 def take_screenshot():
     try:
@@ -96,6 +105,7 @@ def take_screenshot():
             return output, None
     except Exception as e:
         return None, f"Ошибка при создании скриншота: {e}"
+
 
 def send_screenshot(message):
     screenshot_file, error_message = take_screenshot()
@@ -117,6 +127,7 @@ def send_screenshot(message):
                 print(f"Ошибка при удалении временного файла: {e}")
     else:
         bot.send_message(message.chat.id, "Не удалось сделать скриншот.")
+
 
 def record_screen(duration=10):
     global VIDEO_RECORDING
@@ -154,6 +165,7 @@ def record_screen(duration=10):
     finally:
         VIDEO_RECORDING = False
 
+
 def send_video(message):
     video_file, error_message = record_screen()
     if error_message:
@@ -176,6 +188,7 @@ def send_video(message):
     else:
         bot.send_message(message.chat.id, "Не удалось записать видео.")
 
+
 def shutdown_pc():
     try:
         subprocess.run(["shutdown", "/s", "/t", "1"])
@@ -183,12 +196,14 @@ def shutdown_pc():
     except Exception as e:
         return f"Ошибка при выключении ПК: {e}"
 
+
 def lock_pc(message):
     try:
         subprocess.run(["rundll32.exe", "user32.dll,LockWorkStation"])
         bot.send_message(message.chat.id, "ПК заблокирован!")
     except Exception as e:
         bot.send_message(message.chat.id, f"Ошибка при блокировке ПК: {e}")
+
 
 def authorized(func):
     def wrapper(message):
@@ -207,6 +222,7 @@ def authorized(func):
 
     return wrapper
 
+
 def start(message):
     telegram_id = str(message.from_user.id)
 
@@ -219,7 +235,9 @@ def start(message):
             print("Бот не инициализирован. Пожалуйста, введите токен.")
         return
 
-    show_main_menu(message)
+    show_main_menu()
+    send_hello_message(message)
+
 
 def send_access_code_request(message):
     telegram_id = str(message.from_user.id)
@@ -232,6 +250,7 @@ def send_access_code_request(message):
     bot.send_message(message.chat.id,
                      "Введите код доступа, который вы скопировали:")
     bot.register_next_step_handler(message, process_access_code, telegram_id)
+
 
 def show_access_code_window(access_code):
     root = tk.Tk()
@@ -257,6 +276,7 @@ def show_access_code_window(access_code):
 
     root.mainloop()
 
+
 def process_access_code(message, telegram_id):
     user_input = message.text
     if verify_access_code(telegram_id, user_input):
@@ -264,29 +284,114 @@ def process_access_code(message, telegram_id):
         save_user_data()
         clear_access_code(telegram_id)
         bot.send_message(message.chat.id, "Код подтвержден. Доступ к боту предоставлен.")
-        show_main_menu(message)
+        show_main_menu()
+        send_hello_message(message)
     else:
         bot.send_message(message.chat.id, "Неверный код доступа. Попробуйте еще раз.")
         clear_access_code(telegram_id)
 
-def show_main_menu(message):
+
+def show_main_menu():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     lock_button = types.KeyboardButton("🔒 Заблокировать ПК")
     screenshot_button = types.KeyboardButton("📸 Скриншот")
     video_button = types.KeyboardButton("🎬 Записать видео")
     shutdown_button = types.KeyboardButton("🔌 Выключить ПК")
-    clear_data_button = types.KeyboardButton("🗑️ Очистить данные")
-    markup.add(lock_button, screenshot_button, video_button, shutdown_button, clear_data_button)
+    manage_windows_button = types.KeyboardButton("🪟 Управление окнами")
+
+    # Добавляем кнопки в меню
+    markup.add(lock_button, screenshot_button, video_button, shutdown_button, manage_windows_button)
+    markup.add(types.KeyboardButton("🗑️ Очистить данные"))
+
+
+def send_hello_message(message):
     bot.send_message(message.chat.id,
-                     "Привет! Я бот для управления ПК. Нажмите кнопку, чтобы заблокировать, сделать скриншот, записать видео или очистить данные.",
-                     reply_markup=markup)
+                     "Привет! Я бот для управления ПК. Нажмите кнопку, чтобы заблокировать, сделать скриншот, записать видео, очистить данные или управлять окнами.")
+
 
 def clear_user_data(message):
     global AUTHORIZED_USERS
     AUTHORIZED_USERS = {}
     save_user_data()
     bot.send_message(message.chat.id, "Данные пользователей успешно очищены.")
-    show_main_menu(message)
+    show_main_menu()
+
+
+def list_windows():
+    windows = gw.getAllTitles()
+    return windows
+
+
+# Функция для управления окнами
+def manage_window(action, window_title):
+    try:
+        window = gw.getWindowsWithTitle(window_title)[0]
+        if action == "minimize":
+            window.minimize()  # Свернуть окно
+            return f"Окно '{window_title}' свернуто."
+        elif action == "maximize":
+            window.maximize()  # Развернуть окно
+            return f"Окно '{window_title}' развернуто."
+        elif action == "close":
+            window.close()  # Закрыть окно
+            return f"Окно '{window_title}' закрыто."
+        else:
+            return "Неизвестное действие."
+    except IndexError:
+        return f"Окно с заголовком '{window_title}' не найдено."
+    except Exception as e:
+        return f"Ошибка при управлении окном: {e}"
+
+
+@authorized
+def window_management(message):
+    windows = list_windows()
+    if not windows:
+        bot.send_message(message.chat.id, "Нет открытых окон.")
+        return
+
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    for window in windows:
+        markup.add(types.KeyboardButton(window))
+
+    markup.add(types.KeyboardButton("Назад"))
+    bot.send_message(message.chat.id, "Выберите окно:", reply_markup=markup)
+
+    bot.register_next_step_handler(message, process_window_selection)
+
+
+def process_window_selection(message):
+    selected_window = message.text
+    if selected_window == "Назад":
+        show_main_menu()
+        return
+
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    minimize_button = types.KeyboardButton("Свернуть")
+    maximize_button = types.KeyboardButton("Развернуть")
+    close_button = types.KeyboardButton("Закрыть")
+    markup.add(minimize_button, maximize_button, close_button)
+
+    bot.send_message(message.chat.id, f"Вы выбрали окно: {selected_window}. Что хотите сделать?", reply_markup=markup)
+
+    bot.register_next_step_handler(message, lambda msg: perform_window_action(msg, selected_window))
+
+
+def perform_window_action(message, window_title):
+    action = message.text
+    if action == "Свернуть":
+        result = manage_window("minimize", window_title)
+    elif action == "Развернуть":
+        result = manage_window("maximize", window_title)
+    elif action == "Закрыть":
+        result = manage_window("close", window_title)
+    else:
+        bot.send_message(message.chat.id, "Неизвестное действие.")
+        return
+
+    bot.send_message(message.chat.id, result)
+    show_main_menu()
+
 
 def ask_for_token():
     root = tk.Tk()
@@ -318,6 +423,7 @@ def ask_for_token():
 
     root.mainloop()
 
+
 def register_handlers():
     if bot:
         bot.message_handler(commands=['start'])(start)
@@ -326,48 +432,60 @@ def register_handlers():
         bot.message_handler(func=lambda message: message.text == "🎬 Записать видео")(video_button)
         bot.message_handler(func=lambda message: message.text == "🔌 Выключить ПК")(shutdown_button)
         bot.message_handler(func=lambda message: message.text == "🗑️ Очистить данные")(clear_data_button)
+        bot.message_handler(func=lambda message: message.text == "🪟 Управление окнами")(
+            window_management)
         bot.message_handler(commands=['lock'])(lock_pc_command)
         bot.message_handler(commands=['screenshot'])(screenshot_command)
         bot.message_handler(commands=['video'])(video_command)
         bot.message_handler(commands=['shutdown'])(shutdown_command)
 
+
 @authorized
 def lock_pc_button(message):
     lock_pc(message)
+
 
 @authorized
 def screenshot_button(message):
     send_screenshot(message)
 
+
 @authorized
 def video_button(message):
     send_video(message)
+
 
 @authorized
 def shutdown_button(message):
     result = shutdown_pc()
     bot.send_message(message.chat.id, result)
 
+
 @authorized
 def clear_data_button(message):
     clear_user_data(message)
+
 
 @authorized
 def lock_pc_command(message):
     lock_pc(message)
 
+
 @authorized
 def screenshot_command(message):
     send_screenshot(message)
+
 
 @authorized
 def video_command(message):
     send_video(message)
 
+
 @authorized
 def shutdown_command(message):
     result = shutdown_pc()
     bot.send_message(message.chat.id, result)
+
 
 def run_bot():
     global bot, TOKEN_INITIALIZED
@@ -395,6 +513,7 @@ def run_bot():
             print(f"Другая ошибка: {e}. Переподключение через 10 секунд...")
             connected = False
             time.sleep(10)
+
 
 if __name__ == '__main__':
     if sys.platform != "win32":
