@@ -39,7 +39,7 @@ sudo apt-get install python3-pip python3-tk python3-dev ffmpeg
 
 3. Клонируйте репозиторий или скачайте файлы:
 ```bash
-git clone https://github.com/yourusername/DM-Bot.git
+git clone https://github.com/kvunoff/DM-Bot.git
 cd DM-Bot
 ```
 
@@ -190,7 +190,7 @@ sudo apt-get install python3-pip python3-tk python3-dev ffmpeg
 
 3. Clone the repository or download the files:
 ```bash
-git clone https://github.com/yourusername/DM-Bot.git
+git clone https://github.com/kvunoff/DM-Bot.git
 cd DM-Bot
 ```
 
