@@ -91,7 +91,7 @@ sudo pip3 install -r requirements.txt
 ### Linux
 1. Запустите бота:
 ```bash
-python3 linux_bot.py
+python3 main-lin.py
 ```
 
 2. Введите токен бота, когда программа попросит
@@ -125,7 +125,7 @@ python3 linux_bot.py
 ### Linux
 Если возникают проблемы с правами доступа:
 ```bash
-sudo chmod +x linux_bot.py
+sudo chmod +x main-lin.py
 ```
 
 Если не работает блокировка экрана, установите xdg-screensaver:
@@ -242,7 +242,7 @@ sudo pip3 install -r requirements.txt
 ### Linux
 1. Launch the bot:
 ```bash
-python3 linux_bot.py
+python3 main-lin.py
 ```
 
 2. Enter the bot token when prompted
@@ -276,7 +276,7 @@ python3 linux_bot.py
 ### Linux
 If there are problems with access rights:
 ```bash
-sudo chmod +x linux_bot.py
+sudo chmod +x main-lin.py
 ```
 
 If the screen lock does not work, install xdg-screensaver:
