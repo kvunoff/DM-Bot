@@ -1,0 +1,8 @@
+pyTelegramBotAPI==4.14.0
+mss==9.0.1
+imageio==2.33.1
+imageio[ffmpeg]
+numpy==1.26.3
+requests==2.31.0
+pyautogui==0.9.54
+setuptools>=65.5.1 
