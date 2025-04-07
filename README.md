@@ -149,7 +149,7 @@ pip3 install "imageio[ffmpeg]"
 
 ## Лицензия
 
-MIT License
+Вы можете увидеть лицензию [ЗДЕСЬ](https://tuqise.ru/license)
 
 # English
 
@@ -300,6 +300,6 @@ pip3 install "imageio[ffmpeg]"
 
 ## License
 
-MIT License
+You can see licnse [HERE](https://tuqise.ru/license)
 
 
