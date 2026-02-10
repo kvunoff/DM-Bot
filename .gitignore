@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+dist/
+build/
+*.spec
+bot.log
+*.tmp
+*.enc
+authorized_users.json
+.env
+venv/
