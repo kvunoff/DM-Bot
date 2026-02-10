@@ -1,0 +1,6 @@
+pyTelegramBotAPI>=4.18.0
+mss>=9.0.1
+imageio>=2.34.0
+imageio-ffmpeg>=0.4.9
+numpy>=1.26.0
+requests>=2.31.0
