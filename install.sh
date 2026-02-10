@@ -27,11 +27,11 @@ PYTHON_VERSION=$(python3 -c 'import sys; print(sys.version_info[:2] >= (3,8))')
 ok "Python $(python3 --version)"
 
 info "Creating directories..."
-mkdir -p "$INSTALL_DIR/dm_bot"
+mkdir -p "$INSTALL_DIR/dm-bot"
 mkdir -p "$BIN_DIR"
 
 info "Downloading DM-Bot..."
-curl -fsSL "${RAW_URL}/dm_bot/bot.py"       -o "${INSTALL_DIR}/dm_bot/bot.py"
+curl -fsSL "${RAW_URL}/dm-bot/bot.py"       -o "${INSTALL_DIR}/dm-bot/bot.py"
 curl -fsSL "${RAW_URL}/requirements.txt"    -o "${INSTALL_DIR}/requirements.txt"
 ok "Files downloaded"
 
@@ -40,14 +40,14 @@ python3 -m venv "${INSTALL_DIR}/.venv"
 ok "Virtualenv created"
 
 info "Installing Python dependencies..."
-"${INSTALL_DIR}/.venv/bin/pip" install --quiet --upgrade pip
+"${INSTALL_DIR}/.venv/bin/pip" install --quiet --upgrade pip    
 "${INSTALL_DIR}/.venv/bin/pip" install --quiet -r "${INSTALL_DIR}/requirements.txt"
 ok "Dependencies installed"
 
 info "Creating dm-bot command..."
 cat > "$BIN_FILE" << SCRIPT
 #!/usr/bin/env bash
-exec "${INSTALL_DIR}/.venv/bin/python" "${INSTALL_DIR}/dm_bot/bot.py" "\$@"
+exec "${INSTALL_DIR}/.venv/bin/python" "${INSTALL_DIR}/dm-bot/bot.py" "\$@"
 SCRIPT
 chmod +x "$BIN_FILE"
 ok "Command created: dm-bot"

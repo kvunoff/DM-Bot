@@ -42,6 +42,7 @@ systemctl --user start dm-bot
 curl -fsSL https://raw.githubusercontent.com/kvunoff/DM-Bot/main/uninstall.sh | bash
 ```
 
+
 ## Requirements
 
 - Python 3.8+

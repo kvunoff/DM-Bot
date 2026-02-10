@@ -20,4 +20,4 @@ fi
 
 echo ""
 echo "DM-Bot has been uninstalled."
-echo "Your config (~/.config/dm_bot/) was kept. Remove manually if needed."
+echo "Your config (~/.config/dm-bot/) was kept. Remove manually if needed."
